@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guidage - Jonquilles en Fête</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; }
+        #map { flex: 1; width: 100%; }
+
+        #control-panel { height: 40vh; background: #ffff00; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); padding: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; overflow-y: auto; }
+        h3 { margin: 0 0 5px 0; color: #2c3e50; text-align: center; }
+
+        .categories { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+        .cat-btn { padding: 6px 12px; border: 1px solid #ddd; border-radius: 20px; background: #f8f9fa; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .cat-btn.active { background: #28a745; color: white; border-color: #28a745; }
+
+        select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
+
+        #légende { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; min-height: 40px; display: flex; flex-direction: column; justify-content: center; }
+        #guide-box { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; min-height: 40px; display: flex; flex-direction: column; justify-content: center; }
+
+        #gps-btn { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        #gps-btn:disabled { background: #6c757d; }
+
+        .leaflet-routing-container {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div id="control-panel">
+        <h3>🌼 Guidage - Fête des Jonquilles</h3>
+
+        <button id="gps-btn" onclick="activerGPS()">📍 Activer ma position en direct</button>
+
+        <div class="categories">
+            <button class="cat-btn active" onclick="filtrerPoints('tous', this)">Tous</button>
+            <button class="cat-btn" onclick="filtrerPoints('defile', this)">⏰ Parcours du Défilé</button>
+            <button class="cat-btn" onclick="filtrerPoints('parking', this)">🅿️ Parking</button>
+            <button class="cat-btn" onclick="filtrerPoints('acces', this)">🚧 Accès à la fête</button>
+            <button class="cat-btn" onclick="filtrerPoints('toilette', this)">🚻 Toilettes</button>
+            <button class="cat-btn" onclick="filtrerPoints('bar', this)">🍻🌭 Bars - restauration</button>
+            <button class="cat-btn" onclick="filtrerPoints('secours', this)">⛑️ Secours</button>
+            <button class="cat-btn" onclick="filtrerPoints('fete', this)">🎉 Festivités</button>
+            <button class="cat-btn" onclick="filtrerPoints('eau', this)">💧 Point d'eau</button>
+        </div>
+
+        <select id="points-select" onchange="selectionnerDestination()">
+            <option value="">-- Choisissez un lieu vers où aller --</option>
+        </select>
+
+        <div id="légende"><center><b><font color="#017FFF">Première partie du parcours du défilé en bleu</font><br><font color="#FF0000">Deuxième partie du parcours du défilé en rouge</font></b></center></div>
+        <div id="guide-box">Sélectionnez un lieu et activez le GPS pour lancer le guidage.</div>
+    </div>
+
+    <script>
+    const pointsInteret = [
+         { id: 1, nom: "Parking SCA Ouest(parking privé)", cat: "parking", lat: 47.2740, lon: -1.7906, places: 1500, pmr: true, placesPMR: 50, campingCar: true, details: "Le plus proche du cœur de la fête<br> parking privé ouvert de 10 h à minuit<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 2, nom: "Parking Camping-cars et automobiles", cat: "parking", lat: 47.2731, lon: -1.7984, places: 500, pmr: false, campingCar: true, details: "Parking obligatoire pour les camping-cars??<br>restant plusieurs jours<br> ouvert samedi-dimanche et lundi<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 3, nom: "Parking Super U (parking privé)", cat: "parking", lat: 47.2707, lon: -1.7748, places: 450, pmr: true, placesPMR: 10, campingCar: false, details: "Ouvert au public uniquement le dimanche<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 4, nom: "Parking Espace Montluc", cat: "parking", lat: 47.2812, lon: -1.7877, places: 170, pmr: true, placesPMR: 5, campingCar: false, details: "Rapidement complet. En partie réservé aux invités<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 5, nom: "Parking Salle des marais", cat: "parking", lat: 47.2797, lon: -1.7864, places: 107, pmr: true, placesPMR: 3, campingCar: false, details: "Tout public sauf camping car<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 6, nom: "Parking Salle du coteau", cat: "parking", lat: 47.2797, lon: -1.7849, places: 98, pmr: true, placesPMR: 30, campingCar: false, details: "Particulièrement adapté pour les PMR qui sont prioritaire sur ce parking<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 7, nom: "Parking M. Bricolage (parking privé)", cat: "parking", lat: 47.2782, lon: -1.7902, places: 90, pmr: true, placesPMR: 4, campingCar: false, details: "Parking privé ouvert au public uniquement le dimanche<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 8, nom: "Parking Abbé Mercier", cat: "parking", lat: 47.2743, lon: -1.7791, places: 20, pmr: true, placesPMR: 10, campingCar: false, details: "Rapidement saturé. Équipé de 2 bornes de recharge électrique" },
+         { id: 9, nom: "Parking 'Les Cèdres'", cat: "parking", lat: 47.2751, lon: -1.7809, places: 15, pmr: true, placesPMR: 15, campingCar: false, details: "Priorité aux PMR" },
+         { id: 200, nom: "WC temporaires", cat: "toilette", lat: 47.2750, lon: -1.7827, pmr: true, details: "Plusieurs toilettes à privilégier" },
+         { id: 201, nom: "Toilettes Publiques (Mairie)", cat: "toilette", lat: 47.2745, lon: -1.7818, pmr: true, details: "Hors périmètre de la fête" },
+         { id: 202, nom: "Toilettes Publiques (Eglise)", cat: "toilette", lat: 47.2762, lon: -1.7800, pmr: true, details: "Toilettes communales" },
+         { id: 203, nom: "WC et urinoirs temporaires (Bd de Verdun)", cat: "toilette", lat: 47.2763, lon: -1.7827, pmr: false, details: "WC + urinoirs" },
+         { id: 204, nom: "WC temporaires (Jardin public)", cat: "toilette", lat: 47.2776, lon: -1.7823, pmr: true, details: "WC" },
+         { id: 205, nom: "WC et urinoirs temporaires(Route de Savenay)", cat: "toilette", lat: 47.2777, lon: -1.7880, pmr: false, details: "WC + urinoirs" },
+         { id: 206, nom: "WC temporaires (Rue René Plumard)", cat: "toilette", lat: 47.2766, lon: -1.7850, pmr: false, details: "WC" },
+         { id: 207, nom: "WC temporaires (Bd de la libération)", cat: "toilette", lat: 47.2755, lon: -1.7850, pmr: false, details: "WC" },
+         { id: 300, nom: "Poste de Secours", cat: "secours", lat: 47.2754, lon: -1.7815, details: "Présent de 12h à 20h." },
+         { id: 301, nom: "Poste de Secours avancé", cat: "secours", lat: 47.2778, lon: -1.7832, details: "Présent de 12h à 20h." },
+         { id: 302, nom: "Poste de Secours nocturne", cat: "secours", lat: 47.2776, lon: -1.7885, details: "Présent de 20h à 24h." },
+         { id: 400, nom: "Entrée N° 1", cat: "acces", lat: 47.2787, lon: -1.7905, details: "Porte d'accès à la fête N°1" },
+         { id: 401, nom: "Entrée N° 2", cat: "acces", lat: 47.2795, lon: -1.7814, details: "Porte d'accès à la fête N°2" },
+         { id: 402, nom: "Entrée N° 3", cat: "acces", lat: 47.2779, lon: -1.7780, details: "Porte d'accès à la fête N°3" },
+         { id: 403, nom: "Entrée N° 4", cat: "acces", lat: 47.2753, lon: -1.7757, details: "Porte d'accès à la fête N°4" },
+         { id: 404, nom: "Entrée N° 5", cat: "acces", lat: 47.2747, lon: -1.7797, details: "Porte d'accès à la fête N°5" },
+         { id: 405, nom: "Entrée N° 6", cat: "acces", lat: 47.2752, lon: -1.7812, details: "Porte d'accès à la fête N°6" },
+         { id: 406, nom: "Entrée N° 7", cat: "acces", lat: 47.2745, lon: -1.7823, details: "Porte d'accès à la fête N°7" },
+         { id: 407, nom: "Entrée N° 8", cat: "acces", lat: 47.2744, lon: -1.7854, details: "Porte d'accès à la fête N°8" },
+         { id: 500, nom: "Point d'eau", cat: "eau", lat: 47.2745, lon: -1.7820, details: "Point d'eau" },
+         { id: 501, nom: "Point d'eau", cat: "eau", lat: 47.2740, lon: -1.7824, details: "Point d'eau" },
+         { id: 502, nom: "Point d'eau", cat: "eau", lat: 47.2777, lon: -1.7880, details: "Point d'eau" },
+         { id: 600, nom: "bar N°1", cat: "bar", lat: 47.274900, lon: -1.784311, details: "Bar-restauration du comité des fêtes N°1" },
+         { id: 601, nom: "bar", cat: "bar", lat: 47.277208, lon: -1.782289, details: "Bar-restauration du comité des fêtes N°2" },
+         { id: 602, nom: "bar", cat: "bar", lat: 47.277421, lon: -1.788053, details: "Bar-restauration du comité des fêtes N°3" }
+    ];
+
+    const horairesDefile = [
+        { lat: 47.2776, lon: -1.7839, heure: "14h30", lieu: "1ère partie<br>Départ Boulevard Alexandre Goupil", partie: 1 },
+        { lat: 47.2749, lon: -1.7843, heure: "14h50", lieu: "1ère partie<br>Carrefour feux - café de l'Union", partie: 1 },
+        { lat: 47.275649, lon: -1.781510, heure: "15h05", lieu: "1ère partie<br>Salle des Loisirs", partie: 1 },
+        { lat: 47.275200, lon: -1.779803, heure: "15h15", lieu: "1ère partie<br>Ecole Sainte Marie", partie: 1 },
+        { lat: 47.2766, lon: -1.7806, heure: "15h25", lieu: "1ère partie<br>Eglise - Rue Lafayette", partie: 1 },
+        { lat: 47.2788, lon: -1.7809, heure: "15h35", lieu: "1ère partie<br>Rue du Temple.<br>Cette Rue du Temple et le Boulevard de la Liberation<br>sont les lieux idéal pour admirer le défilé", partie: 1 },
+        { lat: 47.2780, lon: -1.7824, heure: "15h50", lieu: "1ère partie<br>Intersection rue Lammenais-Libération.<br>Cette Rue du Temple et le Boulevard de la Liberation<br>sont les lieux idéal pour admirer le défilé", partie: 1 },
+        { lat: 47.2772, lon: -1.7823, heure: "16h00", lieu: "1ère partie<br>Pause - fin de première partie Boulevard de Verdun", partie: 1 },
+        { lat: 47.2757, lon: -1.7823, heure: "16h30", lieu: "2ème partie<br>Départ deuxième partie - Rue Aristide Briand", partie: 2 },
+        { lat: 47.2764, lon: -1.7801, heure: "17h00", lieu: "2ème partie<br>Intersection rue François Dorvault - Rue Pasteur", partie: 2 },
+        { lat: 47.2785, lon: -1.7819, heure: "17h20", lieu: "2ème partie<br>Boulevard de la Libération", partie: 2 },
+        { lat: 47.2766, lon: -1.7848, heure: "17h20", lieu: "2ème partie<br>Rue René Plumard", partie: 2 },
+        { lat: 47.2759, lon: -1.7831, heure: "18h00", lieu: "2ème partie<br>arrivée Rond point-point Rue Aristide Briand", partie: 2 }
+    ];
+
+    const iconesCategories = { parking: "🅿️", toilette: "🚻", eau: "💧", secours: "⛑️", bar: "🍻🌭", acces: "🚧", fete: "🎡" };
+
+    const zoneInterditeCoordonnees = [
+        [47.2795, -1.7815], [47.2796, -1.7806], [47.2787, -1.7786], [47.2780, -1.7779], [47.2774, -1.7757], [47.2763, -1.7753], [47.2752, -1.7755], [47.2748, -1.7738], [47.2743, -1.7742], [47.2743, -1.7751], [47.2740, -1.7757], [47.2742, -1.7779], [47.2740, -1.7794], [47.2744, -1.7806], [47.2745, -1.7821], [47.2743, -1.7832], [47.2737, -1.7837], [47.2795, -1.7949], [47.2799, -1.7943], [47.2788, -1.7911], [47.2785, -1.7908], [47.2782, -1.7909], [47.2779, -1.7899], [47.2783, -1.7897], [47.2785, -1.7906], [47.2809, -1.7895], [47.2808, -1.7872], [47.2803, -1.7865], [47.2800, -1.7867], [47.2793, -1.7857], [47.2792, -1.7852], [47.2784, -1.7831]
+    ];
+    const zoneMusiqueCoordonnees = [ [47.2739, -1.7826], [47.2738, -1.7821], [47.2733, -1.7821], [47.2732, -1.7816], [47.2728, -1.7818], [47.2734, -1.7828] ];
+    const zoneDepartCoordonnees = [ [47.2782, -1.7888], [47.2778, -1.7839], [47.2776, -1.7840], [47.2780, -1.7888] ];
+    const zoneManegeCoordonnees = [ [47.277641, -1.788136], [47.275205, -1.784698], [47.274873, -1.783686], [47.274702, -1.782824], [47.274615, -1.782900], [47.274916, -1.784243], [47.274445, -1.784736], [47.275238, -1.786518], [47.275413, -1.786359], [47.275014, -1.785396], [47.275408, -1.785259], [47.277096, -1.787641], [47.276625, -1.788400], [47.276921, -1.788912], [47.277487, -1.788161], [47.277667, -1.788169] ];
+
+    let map, userMarker;
+    let routingControl = null; 
+    let backupLine = null; 
+    let markersGroup = L.layerGroup();
+    let defileGroup = L.layerGroup(); 
+    let userPos = null;
+    let cibleActuelle = null;
+
+    map = L.map('map').setView([47.2763, -1.7798], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    markersGroup.addTo(map);
+
+    L.polygon(zoneInterditeCoordonnees, { color: 'red', weight: 2, fillColor: '#f03', fillOpacity: 0.25 }).addTo(map).bindPopup("<b>⛔ Enceinte de Jonquilles en fête</b><br><font color='red'>Circulation et stationnement interdits...</font>");
+    L.polygon(zoneMusiqueCoordonnees, { color: 'red', weight: 2, fillColor: '#f03', fillOpacity: 0.25 }).addTo(map).bindPopup("<b>⛔ Enceinte réservée Musique</b>");
+    L.polygon(zoneDepartCoordonnees, { color: 'yellow', weight: 2, fillColor: '#FFFF00', fillOpacity: 0.50 }).addTo(map).bindPopup("<b>⛔ Zone de préparation du défilé</b><br>accès interdit au public de 13h à 15h");
+    L.polygon(zoneManegeCoordonnees, { color: 'green', weight: 2, fillColor: '#00FF00', fillOpacity: 0.50 }).addTo(map).bindPopup("<b>🎡 Fête foraine - samedi - dimanche - lundi");
+
+    // --- CONSTRUCTION VISUELLE DU DÉFILÉ ---
+    const parcoursDefilePartie1 = [
+        [47.277736, -1.783818], [47.276740, -1.785060], [47.276346, -1.784115], [47.275487, -1.785204], [47.275199, -1.784809], [47.274957, -1.784267], [47.275644, -1.783512], [47.275909, -1.783106], [47.275703, -1.781957], [47.275649, -1.781510], [47.275644, -1.781066], [47.275901, -1.780990], [47.275876, -1.780766], [47.275847, -1.780285], [47.275857, -1.780011], [47.275200, -1.779803], [47.275345, -1.779720], [47.275852, -1.779472], [47.276064, -1.779424], [47.276241, -1.779462], [47.276323, -1.780075], [47.276460, -1.780116], [47.276544, -1.780336], [47.276626, -1.780661], [47.277250, -1.780866], [47.277384, -1.781201], [47.277505, -1.781472], [47.277531, -1.781462], [47.278388, -1.780968], [47.278609, -1.780917], [47.278996, -1.781051], [47.279284, -1.781232], [47.278624, -1.781886], [47.278003, -1.782457], [47.277626, -1.782829], [47.277585, -1.782371], [47.277531, -1.782151], [47.277380, -1.782250]
+    ];
+
+    const parcoursDefilePartie2 = [
+        [47.275782, -1.782368], [47.275649, -1.781510], [47.275644, -1.781066], [47.275901, -1.780990], [47.275876, -1.780766], [47.275847, -1.780285], [47.275857, -1.780011], [47.276250, -1.780173], [47.276323, -1.780075], [47.276323, -1.780075], [47.276460, -1.780116], [47.276544, -1.780336], [47.276626, -1.780661], [47.277250, -1.780866], [47.277384, -1.781201], [47.277505, -1.781472], [47.277531, -1.781462], [47.278388, -1.780968], [47.278609, -1.780917], [47.278996, -1.781051], [47.279284, -1.781232], [47.278624, -1.781886], [47.278003, -1.782457], [47.277626, -1.782829], [47.277626, -1.782829], [47.277736, -1.783818], [47.276740, -1.785060], [47.276346, -1.784115], [47.275487, -1.785204], [47.275199, -1.784809], [47.274957, -1.784267], [47.275644, -1.783512], [47.275909, -1.783106]
+    ];
+
+    const ligneDefile1 = L.polyline(parcoursDefilePartie1, { color: '#017FFF', weight: 5, dashArray: '10, 10', opacity: 0.8 }).addTo(defileGroup).bindPopup("<b>Défilé : 1ère partie</b>");
+    const ligneDefile2 = L.polyline(parcoursDefilePartie2, { color: '#FF0000', weight: 5, dashArray: '2, 10', opacity: 0.8 }).addTo(defileGroup).bindPopup("<b>Défilé : 2e partie</b>");
+
+    horairesDefile.forEach(h => {
+        let couleurHorloge = (h.partie === 2) ? "#FF0000" : "#017FFF";
+        let textePartie = (h.partie === 2) ? "2e partie" : "1ère partie";
+
+        const iconeHorloge = L.divIcon({
+            html: `<div style="background: ${couleurHorloge}; color: white; border: 2px solid white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">⏰</div>`,
+            className: 'custom-clock-icon',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+
+        L.marker([h.lat, h.lon], { icon: iconeHorloge }).addTo(defileGroup).bindPopup(`<b>[${textePartie}] ⏰ Heure de passage estimée : <font color="${couleurHorloge}">${h.heure}</font></b><br>📍 ${h.lieu}`);
+    });
+
+    genererOptionsListe('tous');
+    afficherMarqueursSurCarte('tous');
+
+    function genererOptionsListe(categorie) {
+        const select = document.getElementById('points-select');
+        select.innerHTML = '<option value="">-- Choisissez un lieu vers où aller --</option>';
+        pointsInteret.forEach(p => {
+            if (categorie === 'tous' || p.cat === categorie) {
+                let opt = document.createElement('option');
+                opt.value = p.id;
+                opt.innerText = p.nom;
+                select.appendChild(opt);
+            }
+        });
+    }
+
+    function genererTextePopup(p) {
+        let html = `<b>${p.nom}</b><br>`;
+        if (p.places) html += `🚗 Capacité : ${p.places} places<br>`;
+        if (p.pmr !== undefined) html += p.pmr ? "♿ Accessible PMR : Oui<br>" : "♿ Accessible PMR : Non<br>";
+        if (p.placesPMR) html += `🔹 dont <b>${p.placesPMR} places réservées PMR</b><br>`;
+        if (p.details) html += `<small style="color:gray;"><i>${p.details}</i></small><br>`;
+        html += `<br><button onclick="choisirParMarker(${p.id})" style="width:100%; padding:5px; background:#007bff; color:white; border:none; border-radius:3px; cursor:pointer;">S'y rendre</button>`;
+        return html;
+    }
+
+    function afficherMarqueursSurCarte(categorie) {
+        markersGroup.clearLayers(); 
+        pointsInteret.forEach(p => {
+            if (categorie === 'tous' || p.cat === categorie) {
+                let contenuPopup = genererTextePopup(p);
+                const emoji = iconesCategories[p.cat] || "📍";
+                const iconePersonnalisee = L.divIcon({
+                    html: `<div style="background: white; border: 2px solid #28a745; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">${emoji}</div>`,
+                    className: 'custom-div-icon',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                let m = L.marker([p.lat, p.lon], { icon: iconePersonnalisee }).bindPopup(contenuPopup);
+                markersGroup.addLayer(m);
+            }
+        });
+    }
+
+    function filtrerPoints(categorie, bouton) {
+        if (bouton) {
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            bouton.classList.add('active');
