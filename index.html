@@ -422,7 +422,7 @@ function mettreAJourGuidage() {
                 // Si le parking sélectionné fait partie du groupe OUEST
                 if (parkingsOuest.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Est de la fête
-                    if (userPos.lon > -1.7700) { 
+                    if (userPos.lon > -1.7300) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
                             L.latLng(47.278046, -1.750439), // Waypoint Nord de contournement
@@ -436,7 +436,7 @@ function mettreAJourGuidage() {
                 // Si le parking sélectionné fait partie du groupe EST
                 else if (parkingsEst.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Ouest de la fête
-                    if (userPos.lon < -1.7900) { 
+                    if (userPos.lon < -1.8200) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
                             L.latLng(47.278046, -1.750439), // Un autre waypoint adapté pour l'Est
