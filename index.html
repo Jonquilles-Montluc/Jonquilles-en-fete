@@ -429,8 +429,9 @@ function mettreAJourGuidage() {
                 ];
 
                 // 2. VÉRIFIEZ BIEN LES ID DANS CES LISTES :
-                const parkingsSudOuest = [1, 2, 7]; // Mettez les ID correspondants
+                const parkingsSudOuest = [1, 2]; // Mettez les ID correspondants
                 const parkingsNordOuest = [4, 5, 6]; // <-- METTEZ ICI LES ID DU NORD-OUEST
+                const parkingsBricolage = [7];
                 const parkingsEst = [3, 8];
 
                 // --- LOGIQUE DE CONTOURNEMENT GROUPÉE ---
@@ -457,7 +458,22 @@ function mettreAJourGuidage() {
                             L.latLng(47.284905, -1.748052), 
                             L.latLng(47.288370, -1.759639), 
                             L.latLng(47.287205, -1.793242), 
-                            L.latLng(47.279053, -1.790591), 
+                            L.latLng(47.278763, -1.790728), 
+                            L.latLng(47.280939, -1.787204), 
+                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                        ];
+                    }
+                }
+               // Si le parking sélectionné fait partie du groupe Bricolage
+                else if (parkingsBricolage.includes(cibleActuelle.id)) {
+                    // Si l'utilisateur est bloqué à l'Est de la fête
+                    if (userPos.lon > -1.7300) { 
+                        cheminPoints = [
+                            L.latLng(userPos.lat, userPos.lon),
+                            L.latLng(47.284905, -1.748052), 
+                            L.latLng(47.288370, -1.759639), 
+                            L.latLng(47.287205, -1.793242), 
+                            L.latLng(47.278763, -1.790728), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
