@@ -438,7 +438,7 @@ function mettreAJourGuidage() {
                 }
 
                  // Si le parking sélectionné fait partie du groupe NORD-OUEST
-                  else if (parkingsNordOuest.includes(cibleActuelle.id)) {
+                  if (parkingsNordOuest.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Est de la fête
                     if (userPos.lon > -1.7300) { 
                         cheminPoints = [
