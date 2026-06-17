@@ -326,9 +326,9 @@
                     if (userPos.lon > -1.7400) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.282102, -1.749073), 
-                            L.latLng(47.262727, -1.778482), 
-                            L.latLng(47.269225, -1.797794), 
+                            L.latLng(47.282102, -1.749073), //vers Blordrais
+                            L.latLng(47.262727, -1.778482), //route des tourterelles
+                            L.latLng(47.269225, -1.797794), //vers Douet Renard
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
@@ -337,10 +337,10 @@
                     if (userPos.lon > -1.7400) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.288158, -1.759012), 
-                            L.latLng(47.287081, -1.792206), 
-                            L.latLng(47.278882, -1.791151), 
-                            L.latLng(47.280940, -1.787221), 
+                            L.latLng(47.288158, -1.759012), //Alma
+                            L.latLng(47.287081, -1.792206), //la Bernardiere
+                            L.latLng(47.278882, -1.791151), //rond point bricolage
+                            L.latLng(47.280940, -1.787221), //rond point Espace Montluc
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
@@ -349,7 +349,7 @@
                     if (userPos.lon < -1.7400) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.268061, -1.769956), 
+                            L.latLng(47.268061, -1.769956), //rond point Denaire
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
