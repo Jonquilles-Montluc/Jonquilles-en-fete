@@ -220,3 +220,184 @@
         if (bouton) {
             document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
             bouton.classList.add('active');
+        }
+
+        if (categorie === 'defile') {
+            markersGroup.clearLayers();
+            const select = document.getElementById('points-select');
+            select.innerHTML = '<option value="">-- Sélectionnez un lieu du défilé --</option>';
+            horairesDefile.forEach((h, index) => {
+                select.innerHTML += `<option value="defile-${index}">${h.heure} - ${h.lieu.replace(/<br>/g, ' ')}</option>`;
+            });
+            if (!map.hasLayer(defileGroup)) { defileGroup.addTo(map); }
+        } else {
+            if (map.hasLayer(defileGroup)) { map.removeLayer(defileGroup); }
+            genererOptionsListe(categorie);
+            afficherMarqueursSurCarte(categorie);
+        }
+    }
+
+    function activerGPS() {
+        if (!navigator.geolocation) {
+            alert("Votre téléphone ne supporte pas le GPS.");
+            return;
+        }
+        document.getElementById('gps-btn').innerText = "🔄 Recherche du signal GPS...";
+        navigator.geolocation.watchPosition(
+            (pos) => {
+                userPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                document.getElementById('gps-btn').innerText = "🟢 GPS Actif (Suivi en direct)";
+                document.getElementById('gps-btn').style.background = "#28a745";
+                mettreAJourGuidage();
+            },
+            (err) => {
+                document.getElementById('guide-box').innerText = "⚠️ Signal GPS perdu ou refusé.";
+            },
+            { enableHighAccuracy: true }
+        );
+    }
+
+    function selectionnerDestination() {
+        const idSelected = document.getElementById('points-select').value;
+        if (!idSelected) {
+            cibleActuelle = null;
+            if(routingControl) { map.removeControl(routingControl); routingControl = null; }
+            if(backupLine) { map.removeLayer(backupLine); backupLine = null; }
+            return;
+        }
+
+        if (idSelected.startsWith('defile-')) {
+            const index = parseInt(idSelected.split('-')[1]);
+            const pt = horairesDefile[index];
+            cibleActuelle = { id: idSelected, nom: "Point Défilé", lat: pt.lat, lon: pt.lon };
+        } else {
+            cibleActuelle = pointsInteret.find(p => p.id == idSelected);
+        }
+
+        mettreAJourGuidage();
+    }
+
+    function choisirParMarker(id) {
+        if (!userPos) {
+            alert("Veuillez d'abord cliquer sur le bouton bleu 'Activer ma position en direct' pour que l'application sache d'où vous partez !");
+            activerGPS();
+            return;
+        }
+        document.getElementById('points-select').value = id;
+        cibleActuelle = pointsInteret.find(p => p.id == id);
+        map.closePopup();
+        mettreAJourGuidage();
+    }
+
+    function mettreAJourGuidage() {
+        if (userPos) {
+            if (userMarker) {
+                userMarker.setLatLng([userPos.lat, userPos.lon]);
+            } else {
+                userMarker = L.circleMarker([userPos.lat, userPos.lon], { color: '#007bff', radius: 9, fillColor: '#007bff', fillOpacity: 0.8 }).addTo(map).bindPopup("Vous êtes ici");
+            }
+        }
+
+        if (userPos && cibleActuelle) {
+            if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+            if (backupLine) { map.removeLayer(backupLine); backupLine = null; }
+
+            try {
+                let cheminPoints = [
+                    L.latLng(userPos.lat, userPos.lon),
+                    L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                ];
+
+                const parkingsSudOuest = [1, 2, 7];
+                const parkingsNordOuest = [4, 5, 6];
+                const parkingsEst = [3, 8, 9];
+
+                if (parkingsSudOuest.includes(cibleActuelle.id)) {
+                    if (userPos.lon > -1.7300) { 
+                        cheminPoints = [
+                            L.latLng(userPos.lat, userPos.lon),
+                            L.latLng(47.278046, -1.750439), 
+                            L.latLng(47.263679, -1.775173), 
+                            L.latLng(47.268047, -1.795736), 
+                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                        ];
+                    }
+                }
+                else if (parkingsNordOuest.includes(cibleActuelle.id)) {
+                    if (userPos.lon > -1.7300) { 
+                        cheminPoints = [
+                            L.latLng(userPos.lat, userPos.lon),
+                            L.latLng(47.284905, -1.748052), 
+                            L.latLng(47.288370, -1.759639), 
+                            L.latLng(47.287205, -1.793242), 
+                            L.latLng(47.279053, -1.790591), 
+                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                        ];
+                    }
+                }
+                else if (parkingsEst.includes(cibleActuelle.id)) {
+                    if (userPos.lon < -1.8200) { 
+                        cheminPoints = [
+                            L.latLng(userPos.lat, userPos.lon),
+                            L.latLng(47.278046, -1.750439), 
+                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                        ];
+                    }
+                }
+
+                routingControl = L.Routing.control({
+                    waypoints: cheminPoints,
+                    router: L.Routing.osrmv1({
+                        serviceUrl: 'https://router.project-osrm.org/route/v1',
+                        profile: 'foot' 
+                    }),
+                    lineOptions: {
+                        styles: [{ color: '#007bff', opacity: 0.7, weight: 6 }] 
+                    },
+                    createMarker: function() { return null; } 
+                }).addTo(map);
+
+                routingControl.on('routingerror', function() {
+                    tracerLigneSecours();
+                });
+
+                routingControl.on('routesfound', function(e) {
+                    var routes = e.routes;
+                    var summary = routes[0].summary;
+                    var distanceMetres = summary.totalDistance;
+                    var tempsMinutes = Math.round(summary.totalTime / 60);
+
+                    document.getElementById('guide-box').innerHTML = `
+                        Direction : <span style="color:#007bff;">${cibleActuelle.nom}</span><br>
+                        🚶‍♂️ À <b>${distanceMetres.toFixed(0)} mètres</b> (environ ${tempsMinutes} min)
+                    `;
+                });
+
+            } catch (error) {
+                tracerLigneSecours();
+            }
+
+        } else if (!cibleActuelle && userPos) {
+            document.getElementById('guide-box').innerText = "Choisissez un lieu à rejoindre dans la liste ou sur la carte.";
+            map.setView([userPos.lat, userPos.lon], 16);
+        }
+    }
+
+    function tracerLigneSecours() {
+        if(routingControl) { map.removeControl(routingControl); routingControl = null; }
+        if(backupLine) { map.removeLayer(backupLine); }
+
+        backupLine = L.polyline([[userPos.lat, userPos.lon], [cibleActuelle.lat, cibleActuelle.lon]], {
+            color: '#dc3545',
+            weight: 4,
+            dashArray: '5, 10'
+        }).addTo(map);
+
+        document.getElementById('guide-box').innerHTML = `
+            Direction : <span style="color:#dc3545;">${cibleActuelle.nom}</span><br>
+            ⚠️ Tracé à vol d'oiseau (Serveur d'itinéraire indisponible)
+        `;
+    }
+    </script>
+</body>
+</html>
