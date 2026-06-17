@@ -410,7 +410,7 @@ function mettreAJourGuidage() {
                 ];
 
                 // 2. VÉRIFIEZ BIEN LES ID DANS CES LISTES :
-                const parkingsSudOuest = [1, 2]; // Mettez les ID correspondants
+                const parkingsSudOuest = [1, 2, 7]; // Mettez les ID correspondants
                 const parkingsNordOuest = [4, 5, 6]; // <-- METTEZ ICI LES ID DU NORD-OUEST
                 const parkingsEst = [3, 8];
 
@@ -438,8 +438,7 @@ function mettreAJourGuidage() {
                             L.latLng(47.284905, -1.748052), 
                             L.latLng(47.288370, -1.759639), 
                             L.latLng(47.287205, -1.793242), 
-                            L.latLng(47.278763, -1.790728), 
-                            L.latLng(47.280939, -1.787204), 
+                            L.latLng(47.279053, -1.790591), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
@@ -459,6 +458,7 @@ function mettreAJourGuidage() {
                 // 4. Envoi de l'itinéraire dynamique au moteur GPS
                 routingControl = L.Routing.control({
                     waypoints: cheminPoints,
+                    // ... (la suite de votre code reste identique)
                     router: L.Routing.osrmv1({
                         serviceUrl: 'https://router.project-osrm.org/route/v1',
                         profile: 'foot' 
