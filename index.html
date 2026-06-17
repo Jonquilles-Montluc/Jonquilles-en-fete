@@ -396,9 +396,6 @@ function mettreAJourGuidage() {
             if (routingControl) { map.removeControl(routingControl); routingControl = null; }
             if (backupLine) { map.removeLayer(backupLine); backupLine = null; }
 
-            // --- ASTUCE COMMUNE POUR ÉVITER LA ZONE ROUGE EN VOITURE ---
-            // Si la cible est à l'intérieur ou trop proche de la fête, on peut ajuster 
-            // légèrement le point d'arrivée pour forcer le GPS à s'arrêter AVANT la zone interdite.
             let latArrivee = cibleActuelle.lat;
             let lonArrivee = cibleActuelle.lon;
 
@@ -409,39 +406,47 @@ function mettreAJourGuidage() {
                     L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                 ];
 
-                // 2. GROUPEMENT DES PARKINGS DE L'OUEST (ex: ID 1, 2 et 7)
-                // Ces parkings demandent un contournement si l'utilisateur vient de l'Est
-                const parkingsOuest = [1, 2, 4, 5, 6, 7];
-
-                // 3. GROUPEMENT DES PARKINGS DE L'EST (ex: ID 3 et 8)
-                // Ces parkings demanderaient un contournement si l'utilisateur vient de l'Ouest
+                // 2. Définition claire des groupes de parkings
+                const parkingsSudOuest = [1, 2, 7];
+                const parkingsNordOuest = [4, 5, 6];
                 const parkingsEst = [3, 8, 9];
 
                 // --- LOGIQUE DE CONTOURNEMENT GROUPÉE ---
 
-                // Si le parking sélectionné fait partie du groupe OUEST
-                if (parkingsOuest.includes(cibleActuelle.id)) {
+                // Cas 1 : Le parking sélectionné fait partie du groupe SUD-OUEST
+                if (parkingsSudOuest.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Est de la fête
-                    if (userPos.lon > -1.7700) { 
                     if (userPos.lon > -1.7300) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.278046, -1.750439), // Waypoint Nord de contournement
-                            L.latLng(47.263679, -1.775173), // Waypoint Nord de contournement
-                            L.latLng(47.268047, -1.795736), // Waypoint Nord de contournement
+                            L.latLng(47.278046, -1.750439), 
+                            L.latLng(47.263679, -1.775173), 
+                            L.latLng(47.268047, -1.795736), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
                 }
-
-                // Si le parking sélectionné fait partie du groupe EST
+                // Cas 2 : Le parking sélectionné fait partie du groupe NORD-OUEST
+                else if (parkingsNordOuest.includes(cibleActuelle.id)) {
+                    // Si l'utilisateur est bloqué à l'Est de la fête
+                    if (userPos.lon > -1.7300) { 
+                        cheminPoints = [
+                            L.latLng(userPos.lat, userPos.lon),
+                            L.latLng(47.284905, -1.748052), 
+                            L.latLng(47.288370, -1.759639), 
+                            L.latLng(47.287205, -1.793242), 
+                            L.latLng(47.279053, -1.790591), 
+                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                        ];
+                    }
+                }
+                // Cas 3 : Le parking sélectionné fait partie du groupe EST
                 else if (parkingsEst.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Ouest de la fête
-                    if (userPos.lon < -1.7900) { 
                     if (userPos.lon < -1.8200) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.278046, -1.750439), // Un autre waypoint adapté pour l'Est
+                            L.latLng(47.278046, -1.750439), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
@@ -450,7 +455,6 @@ function mettreAJourGuidage() {
                 // 4. Envoi de l'itinéraire dynamique au moteur GPS
                 routingControl = L.Routing.control({
                     waypoints: cheminPoints,
-                    // ... reste de votre code identique
                     router: L.Routing.osrmv1({
                         serviceUrl: 'https://router.project-osrm.org/route/v1',
                         profile: 'foot' 
@@ -461,8 +465,7 @@ function mettreAJourGuidage() {
                     createMarker: function() { return null; } 
                 }).addTo(map);
 
-
-                // Si le serveur de routage plante, on bascule sur la ligne de secours
+                // Événements du moteur de rendu
                 routingControl.on('routingerror', function() {
                     tracerLigneSecours();
                 });
@@ -480,7 +483,6 @@ function mettreAJourGuidage() {
                 });
 
             } catch (error) {
-                // Sécurité immédiate si l'extension rencontre un problème
                 tracerLigneSecours();
             }
 
