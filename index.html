@@ -60,22 +60,22 @@
             <option value="">-- Choisissez un lieu vers où aller --</option>
         </select>
 
-        <div id="légende"><center><b><font color="#017FFF">Première partie du parcours du défilé en bleu</font><br><font color="#FF0000">Deuxième partie du parcours du défilé en rouge</font></b></center></span></div>
+        <div id="légende"><center><b><font color="#017FFF">Première partie du parcours du défilé en bleu</font><br><font color="#FF0000">Deuxième partie du parcours du défilé en rouge</font></b></center></div>
         <div id="guide-box">Sélectionnez un lieu et activez le GPS pour lancer le guidage.</div>
     </div>
 
     <script>
     const pointsInteret = [
          { id: 1, nom: "Parking SCA Ouest(parking privé)", cat: "parking", lat: 47.2740, lon: -1.7906, places: 1500, pmr: true, placesPMR: 50, campingCar: true, details: "Le plus proche du cœur de la fête<br> parking privé ouvert de 10 h à minuit<br><b>pour y accéder sans encombres suivez les déviations</b>" },
-         { id: 2, nom: "Parking Camping-cars et automobiles", cat: "parking", lat: 47.2731, lon: -1.7984, places: 500, pmr: false, campingCar: true, details: "Parking obligatoire pour les camping-cars🚐<br>restant plusieurs jours<br> ouvert samedi-dimanche et lundi<br><b>pour y accéder sans encombres suivez les déviations</b>" },
+         { id: 2, nom: "Parking Camping-cars et automobiles", cat: "parking", lat: 47.2731, lon: -1.7984, places: 500, pmr: false, campingCar: true, details: "Parking obligatoire pour les camping-cars??<br>restant plusieurs jours<br> ouvert samedi-dimanche et lundi<br><b>pour y accéder sans encombres suivez les déviations</b>" },
          { id: 3, nom: "Parking Super U (parking privé)", cat: "parking", lat: 47.2707, lon: -1.7748, places: 450, pmr: true, placesPMR: 10, campingCar: false, details: "Ouvert au public uniquement le dimanche<br><b>pour y accéder sans encombres suivez les déviations</b>" },
          { id: 4, nom: "Parking Espace Montluc", cat: "parking", lat: 47.2812, lon: -1.7877, places: 170, pmr: true, placesPMR: 5, campingCar: false, details: "Rapidement complet. En partie réservé aux invités<br><b>pour y accéder sans encombres suivez les déviations</b>" },
          { id: 5, nom: "Parking Salle des marais", cat: "parking", lat: 47.2797, lon: -1.7864, places: 107, pmr: true, placesPMR: 3, campingCar: false, details: "Tout public sauf camping car<br><b>pour y accéder sans encombres suivez les déviations</b>" },
          { id: 6, nom: "Parking Salle du coteau", cat: "parking", lat: 47.2797, lon: -1.7849, places: 98, pmr: true, placesPMR: 30, campingCar: false, details: "Particulièrement adapté pour les PMR qui sont prioritaire sur ce parking<br><b>pour y accéder sans encombres suivez les déviations</b>" },
          { id: 7, nom: "Parking M. Bricolage (parking privé)", cat: "parking", lat: 47.2782, lon: -1.7902, places: 90, pmr: true, placesPMR: 4, campingCar: false, details: "Parking privé ouvert au public uniquement le dimanche<br><b>pour y accéder sans encombres suivez les déviations</b>" },
-         { id: 8, nom: "Parking Abbé Mercier", cat: "parking", lat: 47.2743, lon: -1.7791, places: 20, pmr: true, placesPMR: 10, campingCar: false, details: "Rapidement saturé. 2quipé de 2 bornes de recharge électrique" },
+         { id: 8, nom: "Parking Abbé Mercier", cat: "parking", lat: 47.2743, lon: -1.7791, places: 20, pmr: true, placesPMR: 10, campingCar: false, details: "Rapidement saturé. Équipé de 2 bornes de recharge électrique" },
          { id: 9, nom: "Parking 'Les Cèdres'", cat: "parking", lat: 47.2751, lon: -1.7809, places: 15, pmr: true, placesPMR: 15, campingCar: false, details: "Priorité aux PMR" },
-         { id: 200, nom: "WC temporaires", cat: "toilette", lat: 47.2750, lon: -1.7827, pmr: true, details: "Plusieurs toilettes à priviligier" },
+         { id: 200, nom: "WC temporaires", cat: "toilette", lat: 47.2750, lon: -1.7827, pmr: true, details: "Plusieurs toilettes à privilégier" },
          { id: 201, nom: "Toilettes Publiques (Mairie)", cat: "toilette", lat: 47.2745, lon: -1.7818, pmr: true, details: "Hors périmètre de la fête" },
          { id: 202, nom: "Toilettes Publiques (Eglise)", cat: "toilette", lat: 47.2762, lon: -1.7800, pmr: true, details: "Toilettes communales" },
          { id: 203, nom: "WC et urinoirs temporaires (Bd de Verdun)", cat: "toilette", lat: 47.2763, lon: -1.7827, pmr: false, details: "WC + urinoirs" },
@@ -97,25 +97,25 @@
          { id: 500, nom: "Point d'eau", cat: "eau", lat: 47.2745, lon: -1.7820, details: "Point d'eau" },
          { id: 501, nom: "Point d'eau", cat: "eau", lat: 47.2740, lon: -1.7824, details: "Point d'eau" },
          { id: 502, nom: "Point d'eau", cat: "eau", lat: 47.2777, lon: -1.7880, details: "Point d'eau" },
-         { id: 600, nom: "bar N°1", cat: "bar", lat: 47.274900, lon: -1.784311, details: "Bar-restautation du comité des fêtes N°1" },
-         { id: 601, nom: "bar", cat: "bar", lat: 47.277208, lon: -1.782289, details: "Bar-restautation du comité des fêtes N°2" },
-         { id: 602, nom: "bar", cat: "bar", lat: 47.277421, lon: -1.788053, details: "Bar-restautation du comité des fêtes N°3" },
-];
+         { id: 600, nom: "bar N°1", cat: "bar", lat: 47.274900, lon: -1.784311, details: "Bar-restauration du comité des fêtes N°1" },
+         { id: 601, nom: "bar", cat: "bar", lat: 47.277208, lon: -1.782289, details: "Bar-restauration du comité des fêtes N°2" },
+         { id: 602, nom: "bar", cat: "bar", lat: 47.277421, lon: -1.788053, details: "Bar-restauration du comité des fêtes N°3" }
+    ];
 
     const horairesDefile = [
-        { lat: 47.2776, lon: -1.7839, heure: "14h30", lieu: "1ère partie<br>Départ Boulevard Alexandre Goupil",partie: 1 },
-        { lat: 47.2749, lon: -1.7843, heure: "14h50", lieu: "1ère partie<br>Carrefour feux - café de l'Union",partie: 1 },
-        { lat: 47.275649, lon: -1.781510, heure: "15h05", lieu: "1ère partie<br>Salle des Loisirs",partie: 1 },
-        { lat: 47.275200, lon: -1.779803, heure: "15h15", lieu: "1ère partie<br>Ecole Sainte Marie",partie: 1 },
-        { lat: 47.2766, lon: -1.7806, heure: "15h25", lieu: "1ère partie<br>Eglise - Rue Lafayette",partie: 1 },
-        { lat: 47.2788, lon: -1.7809, heure: "15h35", lieu: "1ère partie<br>Rue du Temple.<br>Cette Rue du Temple et le Boulevard de la Liberation<br>sont les lieux idéal pour admirer le défilé",partie: 1 },
-        { lat: 47.2780, lon: -1.7824, heure: "15h50", lieu: "1ère partie<br>Intersection rue Lammenais-Libération.<br>Cette Rue du Temple et le Boulevard de la Liberation<br>sont les lieux idéal pour admirer le défilé",partie: 1 },
-        { lat: 47.2772, lon: -1.7823, heure: "16h00", lieu: "1ère partie<br>Pause - fin de première partie Boulevard de Verdun",partie: 1 },
-        { lat: 47.2757, lon: -1.7823, heure: "16h30", lieu: "2ème partie<br>Départ deuxième partie - Rue Aristide Briand",partie: 2 },
-        { lat: 47.2764, lon: -1.7801, heure: "17h00", lieu: "2ème partie<br>Intersection rue François Dorvault - Rue Pasteur",partie: 2 },
-        { lat: 47.2785, lon: -1.7819, heure: "17h20", lieu: "2ème partie<br>Boulevard de la Libération",partie: 2 },
-        { lat: 47.2766, lon: -1.7848, heure: "17h20", lieu: "2ème partie<br>Rue René Plumard",partie: 2 },
-        { lat: 47.2759, lon: -1.7831, heure: "18h00", lieu: "2ème partie<br>arrivée Rond point-point Rue Aristide Briand",partie: 2 }
+        { lat: 47.2776, lon: -1.7839, heure: "14h30", lieu: "1ère partie<br>Départ Boulevard Alexandre Goupil", partie: 1 },
+        { lat: 47.2749, lon: -1.7843, heure: "14h50", lieu: "1ère partie<br>Carrefour feux - café de l'Union", partie: 1 },
+        { lat: 47.275649, lon: -1.781510, heure: "15h05", lieu: "1ère partie<br>Salle des Loisirs", partie: 1 },
+        { lat: 47.275200, lon: -1.779803, heure: "15h15", lieu: "1ère partie<br>Ecole Sainte Marie", partie: 1 },
+        { lat: 47.2766, lon: -1.7806, heure: "15h25", lieu: "1ère partie<br>Eglise - Rue Lafayette", partie: 1 },
+        { lat: 47.2788, lon: -1.7809, heure: "15h35", lieu: "1ère partie<br>Rue du Temple.<br>Cette Rue du Temple et le Boulevard de la Liberation<br>sont les lieux idéal pour admirer le défilé", partie: 1 },
+        { lat: 47.2780, lon: -1.7824, heure: "15h50", lieu: "1ère partie<br>Intersection rue Lammenais-Libération.<br>Cette Rue du Temple et le Boulevard de la Liberation<br>sont les lieux idéal pour admirer le défilé", partie: 1 },
+        { lat: 47.2772, lon: -1.7823, heure: "16h00", lieu: "1ère partie<br>Pause - fin de première partie Boulevard de Verdun", partie: 1 },
+        { lat: 47.2757, lon: -1.7823, heure: "16h30", lieu: "2ème partie<br>Départ deuxième partie - Rue Aristide Briand", partie: 2 },
+        { lat: 47.2764, lon: -1.7801, heure: "17h00", lieu: "2ème partie<br>Intersection rue François Dorvault - Rue Pasteur", partie: 2 },
+        { lat: 47.2785, lon: -1.7819, heure: "17h20", lieu: "2ème partie<br>Boulevard de la Libération", partie: 2 },
+        { lat: 47.2766, lon: -1.7848, heure: "17h20", lieu: "2ème partie<br>Rue René Plumard", partie: 2 },
+        { lat: 47.2759, lon: -1.7831, heure: "18h00", lieu: "2ème partie<br>arrivée Rond point-point Rue Aristide Briand", partie: 2 }
     ];
 
     const iconesCategories = { parking: "🅿️", toilette: "🚻", eau: "💧", secours: "⛑️", bar: "🍻🌭", acces: "🚧", fete: "🎡" };
@@ -129,7 +129,7 @@
 
     let map, userMarker;
     let routingControl = null; 
-    let backupLine = null; // Ligne directe de secours si panne serveur
+    let backupLine = null; 
     let markersGroup = L.layerGroup();
     let defileGroup = L.layerGroup(); 
     let userPos = null;
@@ -148,114 +148,29 @@
 
     // --- CONSTRUCTION VISUELLE DU DÉFILÉ ---
     const parcoursDefilePartie1 = [
-        [47.277736, -1.783818], //Rond-point Lacoste
-        [47.276740, -1.785060], //Intersection Goupil - Plumard
-        [47.276346, -1.784115], //Intersection Plumard - Libération
-        [47.275487, -1.785204], //Intersection Libération - Savenay
-        [47.275199, -1.784809], //Savenay
-        [47.274957, -1.784267], //Intersection Savenay - Briand
-        [47.275644, -1.783512], //Intersection Briand -Fontaine
-        [47.275909, -1.783106], //Intersection Briand - Verdun
-        [47.275703, -1.781957], 
-        [47.275649, -1.781510], //Salle des loisirs
-        [47.275644, -1.781066], //Intersection Briand - Paix
-        [47.275901, -1.780990], //Intersection Paix - Jeanne d'Arc
-        [47.275876, -1.780766], // Rue Jeanne d'Arc
-        [47.275847, -1.780285], // Rue Jeanne d'Arc
-        [47.275857, -1.780011], //Intersection Jeanne d'Arc - Acigné
-        [47.275200, -1.779803], // Ste Marie
-        [47.275345, -1.779720], //Chauvin de la Musse
-        [47.275852, -1.779472], //Chauvin de la Musse 
-        [47.276064, -1.779424], //Intersection Musse - Sévigné
-        [47.276241, -1.779462], //Intersection Musse - Bretagne
-        [47.276323, -1.780075], // Intersection Bretagne - Dorvault
-        [47.276460, -1.780116], // Intersection Dorvault - Pasteur
-        [47.276544, -1.780336], 
-        [47.276626, -1.780661], //Intersection Dorvault - Lafayette
-        [47.277250, -1.780866], 
-        [47.277384, -1.781201], 
-        [47.277505, -1.781472], 
-        [47.277531, -1.781462], // Intersection Foch - Temple
-        [47.278388, -1.780968], //Rue du Temple
-        [47.278609, -1.780917], //Rue du Temple
-        [47.278996, -1.781051], //Rue du Temple
-        [47.279284, -1.781232], // Intersection Temple - Libération 
-        [47.278624, -1.781886], 
-        [47.278003, -1.782457], //Intersection Libération - Lammenais
-        [47.277626, -1.782829], //Intersection Libération - Sport
-        [47.277585, -1.782371], 
-        [47.277531, -1.782151], 
-        [47.277380, -1.782250]  //Arrivée Bd Verdun
+        [47.277736, -1.783818], [47.276740, -1.785060], [47.276346, -1.784115], [47.275487, -1.785204], [47.275199, -1.784809], [47.274957, -1.784267], [47.275644, -1.783512], [47.275909, -1.783106], [47.275703, -1.781957], [47.275649, -1.781510], [47.275644, -1.781066], [47.275901, -1.780990], [47.275876, -1.780766], [47.275847, -1.780285], [47.275857, -1.780011], [47.275200, -1.779803], [47.275345, -1.779720], [47.275852, -1.779472], [47.276064, -1.779424], [47.276241, -1.779462], [47.276323, -1.780075], [47.276460, -1.780116], [47.276544, -1.780336], [47.276626, -1.780661], [47.277250, -1.780866], [47.277384, -1.781201], [47.277505, -1.781472], [47.277531, -1.781462], [47.278388, -1.780968], [47.278609, -1.780917], [47.278996, -1.781051], [47.279284, -1.781232], [47.278624, -1.781886], [47.278003, -1.782457], [47.277626, -1.782829], [47.277585, -1.782371], [47.277531, -1.782151], [47.277380, -1.782250]
     ];
 
-// --- CONSTRUCTION VISUELLE DU 2eDÉFILÉ ---
-const parcoursDefilePartie2 = [
-        [47.275782, -1.782368], //départ
-        [47.275649, -1.781510], //Salle des loisirs
-        [47.275644, -1.781066], //Intersection Briand - Paix
-        [47.275901, -1.780990], //Intersection Paix - Jeanne d'Arc
-        [47.275876, -1.780766], // Rue Jeanne d'Arc
-        [47.275847, -1.780285], // Rue Jeanne d'Arc
-        [47.275857, -1.780011],  //intersection Jeanne d'Arc - Acigné
-        [47.276250, -1.780173],  //place du commerce
-        [47.276323, -1.780075], // Intersection Bretagne - Dorvault
-        [47.276323, -1.780075], // Intersection Bretagne - Dorvault
-        [47.276460, -1.780116], // Itersection Dorvault - Pasteur
-        [47.276544, -1.780336], 
-        [47.276626, -1.780661], //intersection Dorvault - Lafayette
-        [47.277250, -1.780866], 
-        [47.277384, -1.781201], 
-        [47.277505, -1.781472], 
-        [47.277531, -1.781462], // Intersection Foch - Temple
-        [47.278388, -1.780968], //Rue du Temple
-        [47.278609, -1.780917], //Rue du Temple
-        [47.278996, -1.781051], //Rue du Temple
-        [47.279284, -1.781232], // Intersection Temple - Libération 
-        [47.278624, -1.781886], 
-        [47.278003, -1.782457], //Intersection Libération - Lammenais
-        [47.277626, -1.782829], //Intersection Libération - Sp
-        [47.277626, -1.782829], //Intersection Libération - Sport
-        [47.277736, -1.783818], //Rond-point Lacoste
-        [47.276740, -1.785060], //Intersection Goupil - Plumard
-        [47.276346, -1.784115], //Intersection Plumard - Libération
-        [47.275487, -1.785204], //Intersection Libération - Savenay
-        [47.275199, -1.784809], //Savenay
-        [47.274957, -1.784267], //Intersection Savenay - Briand
-        [47.275644, -1.783512], //Intersection Briand -Fontaine
-        [47.275909, -1.783106]  //arrivée
+    const parcoursDefilePartie2 = [
+        [47.275782, -1.782368], [47.275649, -1.781510], [47.275644, -1.781066], [47.275901, -1.780990], [47.275876, -1.780766], [47.275847, -1.780285], [47.275857, -1.780011], [47.276250, -1.780173], [47.276323, -1.780075], [47.276323, -1.780075], [47.276460, -1.780116], [47.276544, -1.780336], [47.276626, -1.780661], [47.277250, -1.780866], [47.277384, -1.781201], [47.277505, -1.781472], [47.277531, -1.781462], [47.278388, -1.780968], [47.278609, -1.780917], [47.278996, -1.781051], [47.279284, -1.781232], [47.278624, -1.781886], [47.278003, -1.782457], [47.277626, -1.782829], [47.277626, -1.782829], [47.277736, -1.783818], [47.276740, -1.785060], [47.276346, -1.784115], [47.275487, -1.785204], [47.275199, -1.784809], [47.274957, -1.784267], [47.275644, -1.783512], [47.275909, -1.783106]
     ];
 
-    const ligneDefile1 = L.polyline(parcoursDefilePartie1, {
-    color: '#017FFF', weight: 5, dashArray: '10, 10', opacity: 0.8
-}).addTo(defileGroup).bindPopup("<b>Défilé : 1ère partie</b>");
+    const ligneDefile1 = L.polyline(parcoursDefilePartie1, { color: '#017FFF', weight: 5, dashArray: '10, 10', opacity: 0.8 }).addTo(defileGroup).bindPopup("<b>Défilé : 1ère partie</b>");
+    const ligneDefile2 = L.polyline(parcoursDefilePartie2, { color: '#FF0000', weight: 5, dashArray: '2, 10', opacity: 0.8 }).addTo(defileGroup).bindPopup("<b>Défilé : 2e partie</b>");
 
-const ligneDefile2 = L.polyline(parcoursDefilePartie2, {
-    color: '#FF0000', weight: 5, dashArray: '2, 10', opacity: 0.8
-}).addTo(defileGroup).bindPopup("<b>Défilé : 2e partie</b>");
+    horairesDefile.forEach(h => {
+        let couleurHorloge = (h.partie === 2) ? "#FF0000" : "#017FFF";
+        let textePartie = (h.partie === 2) ? "2e partie" : "1ère partie";
 
-// Génération des horloges de couleurs différentes
-horairesDefile.forEach(h => {
-    // Par défaut on choisit le violet pour la partie 1
-    let couleurHorloge = "#017FFF"; 
-    let textePartie = "1ère partie";
+        const iconeHorloge = L.divIcon({
+            html: `<div style="background: ${couleurHorloge}; color: white; border: 2px solid white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">⏰</div>`,
+            className: 'custom-clock-icon',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
 
-    // Si c'est la partie 2, on bascule sur de l'orange
-    if (h.partie === 2) {
-        couleurHorloge = "#FF0000"; 
-        textePartie = "2e partie";
-    }
-
-    const iconeHorloge = L.divIcon({
-        html: `<div style="background: ${couleurHorloge}; color: white; border: 2px solid white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">⏰</div>`,
-        className: 'custom-clock-icon',
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        L.marker([h.lat, h.lon], { icon: iconeHorloge }).addTo(defileGroup).bindPopup(`<b>[${textePartie}] ⏰ Heure de passage estimée : <font color="${couleurHorloge}">${h.heure}</font></b><br>📍 ${h.lieu}`);
     });
-
-    L.marker([h.lat, h.lon], { icon: iconeHorloge })
-     .addTo(defileGroup)
-     .bindPopup(`<b>[${textePartie}] ⏰ Heure de passage estimée : <font color="${couleurHorloge}">${h.heure}</font></b><br>📍 ${h.lieu}`);
-});
 
     genererOptionsListe('tous');
     afficherMarqueursSurCarte('tous');
@@ -304,210 +219,4 @@ horairesDefile.forEach(h => {
     function filtrerPoints(categorie, bouton) {
         if (bouton) {
             document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-            bouton.classList.remove('active');
             bouton.classList.add('active');
-        }
-
-        if (categorie === 'defile') {
-            markersGroup.clearLayers();
-
-            const select = document.getElementById('points-select');
-            select.innerHTML = '<option value="">-- Sélectionnez un lieu du défilé --</option>';
-            horairesDefile.forEach((h, index) => {
-                select.innerHTML += `<option value="defile-${index}">${h.heure} - ${h.lieu}</option>`;
-            });
-
-            if (!map.hasLayer(defileGroup)) {
-                defileGroup.addTo(map);
-            }
-
-        } else {
-            if (map.hasLayer(defileGroup)) {
-                map.removeLayer(defileGroup);
-            }
-            genererOptionsListe(categorie);
-            afficherMarqueursSurCarte(categorie);
-        }
-    }
-
-    function activerGPS() {
-        if (!navigator.geolocation) {
-            alert("Votre téléphone ne supporte pas le GPS.");
-            return;
-        }
-        document.getElementById('gps-btn').innerText = "🔄 Recherche du signal GPS...";
-        navigator.geolocation.watchPosition(
-            (pos) => {
-                userPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-                document.getElementById('gps-btn').innerText = "🟢 GPS Actif (Suivi en direct)";
-                document.getElementById('gps-btn').style.background = "#28a745";
-                mettreAJourGuidage();
-            },
-            (err) => {
-                document.getElementById('guide-box').innerText = "⚠️ Signal GPS perdu ou refusé.";
-            },
-            { enableHighAccuracy: true }
-        );
-    }
-
-    function selectionnerDestination() {
-        const idSelected = document.getElementById('points-select').value;
-        if (!idSelected) {
-            cibleActuelle = null;
-            if(routingControl) { map.removeControl(routingControl); routingControl = null; }
-            if(backupLine) { map.removeLayer(backupLine); backupLine = null; }
-            return;
-        }
-
-        if (idSelected.startsWith('defile-')) {
-            const index = parseInt(idSelected.split('-')[1]);
-            const pt = horairesDefile[index];
-            cibleActuelle = { id: idSelected, nom: pt.lieu, lat: pt.lat, lon: pt.lon };
-        } else {
-            cibleActuelle = pointsInteret.find(p => p.id == idSelected);
-        }
-
-        mettreAJourGuidage();
-    }
-
-    function choisirParMarker(id) {
-        if (!userPos) {
-            alert("Veuillez d'abord cliquer sur le bouton bleu 'Activer ma position en direct' pour que l'application sache d'où vous partez !");
-            activerGPS();
-            return;
-        }
-        document.getElementById('points-select').value = id;
-        cibleActuelle = pointsInteret.find(p => p.id == id);
-        map.closePopup();
-        mettreAJourGuidage();
-    }
-
-function mettreAJourGuidage() {
-        if (userPos) {
-            if (userMarker) {
-                userMarker.setLatLng([userPos.lat, userPos.lon]);
-            } else {
-                userMarker = L.circleMarker([userPos.lat, userPos.lon], { color: '#007bff', radius: 9, fillColor: '#007bff', fillOpacity: 0.8 }).addTo(map).bindPopup("Vous êtes ici");
-            }
-        }
-
-        if (userPos && cibleActuelle) {
-            // Nettoyage systématique des tracés existants
-            if (routingControl) { map.removeControl(routingControl); routingControl = null; }
-            if (backupLine) { map.removeLayer(backupLine); backupLine = null; }
-
-            let latArrivee = cibleActuelle.lat;
-            let lonArrivee = cibleActuelle.lon;
-
-            try {
-                // 1. Par défaut : itinéraire direct
-                let cheminPoints = [
-                    L.latLng(userPos.lat, userPos.lon),
-                    L.latLng(cibleActuelle.lat, cibleActuelle.lon)
-                ];
-
-                // 2. Définition claire des groupes de parkings
-                const parkingsSudOuest = [1, 2, 7];
-                const parkingsNordOuest = [4, 5, 6];
-                const parkingsEst = [3, 8, 9];
-
-                // --- LOGIQUE DE CONTOURNEMENT GROUPÉE ---
-
-                // Cas 1 : Le parking sélectionné fait partie du groupe SUD-OUEST
-                if (parkingsSudOuest.includes(cibleActuelle.id)) {
-                    // Si l'utilisateur est bloqué à l'Est de la fête
-                    if (userPos.lon > -1.7300) { 
-                        cheminPoints = [
-                            L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.278046, -1.750439), 
-                            L.latLng(47.263679, -1.775173), 
-                            L.latLng(47.268047, -1.795736), 
-                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
-                        ];
-                    }
-                }
-                // Cas 2 : Le parking sélectionné fait partie du groupe NORD-OUEST
-                else if (parkingsNordOuest.includes(cibleActuelle.id)) {
-                    // Si l'utilisateur est bloqué à l'Est de la fête
-                    if (userPos.lon > -1.7300) { 
-                        cheminPoints = [
-                            L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.284905, -1.748052), 
-                            L.latLng(47.288370, -1.759639), 
-                            L.latLng(47.287205, -1.793242), 
-                            L.latLng(47.279053, -1.790591), 
-                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
-                        ];
-                    }
-                }
-                // Cas 3 : Le parking sélectionné fait partie du groupe EST
-                else if (parkingsEst.includes(cibleActuelle.id)) {
-                    // Si l'utilisateur est bloqué à l'Ouest de la fête
-                    if (userPos.lon < -1.8200) { 
-                        cheminPoints = [
-                            L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.278046, -1.750439), 
-                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
-                        ];
-                    }
-                }
-
-                // 4. Envoi de l'itinéraire dynamique au moteur GPS
-                routingControl = L.Routing.control({
-                    waypoints: cheminPoints,
-                    router: L.Routing.osrmv1({
-                        serviceUrl: 'https://router.project-osrm.org/route/v1',
-                        profile: 'foot' 
-                    }),
-                    lineOptions: {
-                        styles: [{ color: '#007bff', opacity: 0.7, weight: 6 }] 
-                    },
-                    createMarker: function() { return null; } 
-                }).addTo(map);
-
-                // Événements du moteur de rendu
-                routingControl.on('routingerror', function() {
-                    tracerLigneSecours();
-                });
-
-                routingControl.on('routesfound', function(e) {
-                    var routes = e.routes;
-                    var summary = routes[0].summary;
-                    var distanceMetres = summary.totalDistance;
-                    var tempsMinutes = Math.round(summary.totalTime / 60);
-
-                    document.getElementById('guide-box').innerHTML = `
-                        Direction : <span style="color:#007bff;">${cibleActuelle.nom}</span><br>
-                        🚶‍♂️ À <b>${distanceMetres.toFixed(0)} mètres</b> par les rues (environ ${tempsMinutes} min)
-                    `;
-                });
-
-            } catch (error) {
-                tracerLigneSecours();
-            }
-
-        } else if (!cibleActuelle && userPos) {
-            document.getElementById('guide-box').innerText = "Choisissez un lieu à rejoindre dans la liste ou sur la carte.";
-            map.setView([userPos.lat, userPos.lon], 16);
-        }
-    }
-
-    // Fonction de sécurité qui dessine à vol d'oiseau si panne du serveur de routage
-    function tracerLigneSecours() {
-        if(routingControl) { map.removeControl(routingControl); routingControl = null; }
-        if(backupLine) { map.removeLayer(backupLine); }
-
-        backupLine = L.polyline([[userPos.lat, userPos.lon], [cibleActuelle.lat, cibleActuelle.lon]], {
-            color: '#dc3545',
-            weight: 4,
-            dashArray: '5, 10'
-        }).addTo(map);
-
-        document.getElementById('guide-box').innerHTML = `
-            Direction : <span style="color:#dc3545;">${cibleActuelle.nom}</span><br>
-            ⚠️ Tracé à vol d'oiseau (Serveur de calcul d'itinéraire indisponible)
-        `;
-    }
-    </script>
-</body>
-</html>
