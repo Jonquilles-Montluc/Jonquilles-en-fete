@@ -421,6 +421,18 @@ function mettreAJourGuidage() {
                 // Ces parkings demanderaient un contournement si l'utilisateur vient de l'Ouest
                 const parkingsEst = [3, 8, 9];
 
+               try {
+                // 1. Par défaut : itinéraire direct
+                let cheminPoints = [
+                    L.latLng(userPos.lat, userPos.lon),
+                    L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                ];
+
+                // 2. VÉRIFIEZ BIEN LES ID DANS CES LISTES :
+                const parkingsSudOuest = [1, 2, 7]; // Mettez les ID correspondants
+                const parkingsNordOuest = [4, 5, 6]; // <-- METTEZ ICI LES ID DU NORD-OUEST
+                const parkingsEst = [3, 8];
+
                 // --- LOGIQUE DE CONTOURNEMENT GROUPÉE ---
                 
                 // Si le parking sélectionné fait partie du groupe SUD-OUEST
@@ -429,36 +441,34 @@ function mettreAJourGuidage() {
                     if (userPos.lon > -1.7300) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.284905, -1.748052), // Waypoint Nord de contournement
-                            L.latLng(47.263679, -1.775173), // Waypoint Nord de contournement
-                            L.latLng(47.268047, -1.795736), // Waypoint Nord de contournement
+                            L.latLng(47.284905, -1.748052), 
+                            L.latLng(47.263679, -1.775173), 
+                            L.latLng(47.268047, -1.795736), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
                 }
-
-                 // Si le parking sélectionné fait partie du groupe NORD-OUEST
-                  if (parkingsNordOuest.includes(cibleActuelle.id)) {
+                // Si le parking sélectionné fait partie du groupe NORD-OUEST
+                else if (parkingsNordOuest.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Est de la fête
                     if (userPos.lon > -1.7300) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.284905, -1.748052), // Waypoint Nord de contournement
-                            L.latLng(47.288370, -1.759639), // Waypoint Nord de contournement
-                            L.latLng(47.287205, -1.793242), // Waypoint Nord de contournement
-                            L.latLng(47.279053, -1.790591), // Waypoint Nord de contournement
+                            L.latLng(47.284905, -1.748052), 
+                            L.latLng(47.288370, -1.759639), 
+                            L.latLng(47.287205, -1.793242), 
+                            L.latLng(47.279053, -1.790591), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
                 }
-                
                 // Si le parking sélectionné fait partie du groupe EST
                 else if (parkingsEst.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Ouest de la fête
                     if (userPos.lon < -1.8200) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.278046, -1.750439), // Un autre waypoint adapté pour l'Est
+                            L.latLng(47.278046, -1.750439), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
@@ -467,7 +477,6 @@ function mettreAJourGuidage() {
                 // 4. Envoi de l'itinéraire dynamique au moteur GPS
                 routingControl = L.Routing.control({
                     waypoints: cheminPoints,
-                    // ... reste de votre code identique
                     router: L.Routing.osrmv1({
                         serviceUrl: 'https://router.project-osrm.org/route/v1',
                         profile: 'foot' 
