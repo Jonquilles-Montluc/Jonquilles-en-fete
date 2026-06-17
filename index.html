@@ -409,25 +409,6 @@ function mettreAJourGuidage() {
                     L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                 ];
 
-                // 2. GROUPEMENT DES PARKINGS DE SUD-OUEST (ex: ID 1, 2 et 7)
-                // Ces parkings demandent un contournement si l'utilisateur vient de l'Est
-                const parkingsSudOuest = [1, 2];
-
-                 // 2. GROUPEMENT DES PARKINGS NORD-OUEST (ex: ID 1, 2 et 7)
-                // Ces parkings demandent un contournement si l'utilisateur vient de l'Est
-                const parkingsNordOuest = [4, 5, 6, 7];
-
-                // 3. GROUPEMENT DES PARKINGS DE L'EST (ex: ID 3 et 8)
-                // Ces parkings demanderaient un contournement si l'utilisateur vient de l'Ouest
-                const parkingsEst = [3, 8, 9];
-
-               try {
-                // 1. Par défaut : itinéraire direct
-                let cheminPoints = [
-                    L.latLng(userPos.lat, userPos.lon),
-                    L.latLng(cibleActuelle.lat, cibleActuelle.lon)
-                ];
-
                 // 2. VÉRIFIEZ BIEN LES ID DANS CES LISTES :
                 const parkingsSudOuest = [1, 2]; // Mettez les ID correspondants
                 const parkingsNordOuest = [4, 5, 6]; // <-- METTEZ ICI LES ID DU NORD-OUEST
