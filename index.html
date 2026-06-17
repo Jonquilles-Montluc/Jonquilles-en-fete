@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guidage - Jonquilles en Fête</title>
-    
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -14,10 +14,10 @@
     <style>
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; }
         #map { flex: 1; width: 100%; }
-        
+
         #control-panel { height: 40vh; background: #ffff00; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); padding: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; overflow-y: auto; }
         h3 { margin: 0 0 5px 0; color: #2c3e50; text-align: center; }
-        
+
         .categories { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
         .cat-btn { padding: 6px 12px; border: 1px solid #ddd; border-radius: 20px; background: #f8f9fa; font-size: 13px; cursor: pointer; white-space: nowrap; }
         .cat-btn.active { background: #28a745; color: white; border-color: #28a745; }
@@ -26,7 +26,7 @@
 
         #légende { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; min-height: 40px; display: flex; flex-direction: column; justify-content: center; }
         #guide-box { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; min-height: 40px; display: flex; flex-direction: column; justify-content: center; }
-        
+
         #gps-btn { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
         #gps-btn:disabled { background: #6c757d; }
 
@@ -41,7 +41,7 @@
 
     <div id="control-panel">
         <h3>🌼 Guidage - Fête des Jonquilles</h3>
-        
+
         <button id="gps-btn" onclick="activerGPS()">📍 Activer ma position en direct</button>
 
         <div class="categories">
@@ -307,10 +307,10 @@ horairesDefile.forEach(h => {
             bouton.classList.remove('active');
             bouton.classList.add('active');
         }
-        
+
         if (categorie === 'defile') {
             markersGroup.clearLayers();
-            
+
             const select = document.getElementById('points-select');
             select.innerHTML = '<option value="">-- Sélectionnez un lieu du défilé --</option>';
             horairesDefile.forEach((h, index) => {
@@ -320,7 +320,7 @@ horairesDefile.forEach(h => {
             if (!map.hasLayer(defileGroup)) {
                 defileGroup.addTo(map);
             }
-            
+
         } else {
             if (map.hasLayer(defileGroup)) {
                 map.removeLayer(defileGroup);
@@ -409,13 +409,34 @@ function mettreAJourGuidage() {
                     L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                 ];
 
+                // 2. GROUPEMENT DES PARKINGS DE SUD-OUEST (ex: ID 1, 2 et 7)
+                // Ces parkings demandent un contournement si l'utilisateur vient de l'Est
+                const parkingsSudOuest = [1, 2];
+
+                 // 2. GROUPEMENT DES PARKINGS NORD-OUEST (ex: ID 1, 2 et 7)
+                // Ces parkings demandent un contournement si l'utilisateur vient de l'Est
+                const parkingsNordOuest = [4, 5, 6, 7];
+
+                // 3. GROUPEMENT DES PARKINGS DE L'EST (ex: ID 3 et 8)
+                // Ces parkings demanderaient un contournement si l'utilisateur vient de l'Ouest
+                const parkingsEst = [3, 8, 9];
+
+               try {
+                // 1. Par défaut : itinéraire direct
+                let cheminPoints = [
+                    L.latLng(userPos.lat, userPos.lon),
+                    L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                ];
+
                 // 2. VÉRIFIEZ BIEN LES ID DANS CES LISTES :
                 const parkingsSudOuest = [1, 2, 7]; // Mettez les ID correspondants
+                const parkingsSudOuest = [1, 2]; // Mettez les ID correspondants
                 const parkingsNordOuest = [4, 5, 6]; // <-- METTEZ ICI LES ID DU NORD-OUEST
+                const parkingsBricolage = [7];
                 const parkingsEst = [3, 8];
 
                 // --- LOGIQUE DE CONTOURNEMENT GROUPÉE ---
-                
+
                 // Si le parking sélectionné fait partie du groupe SUD-OUEST
                 if (parkingsSudOuest.includes(cibleActuelle.id)) {
                     // Si l'utilisateur est bloqué à l'Est de la fête
@@ -439,6 +460,22 @@ function mettreAJourGuidage() {
                             L.latLng(47.288370, -1.759639), 
                             L.latLng(47.287205, -1.793242), 
                             L.latLng(47.279053, -1.790591), 
+                            L.latLng(47.278763, -1.790728), 
+                            L.latLng(47.280939, -1.787204), 
+                            L.latLng(cibleActuelle.lat, cibleActuelle.lon)
+                        ];
+                    }
+                }
+               // Si le parking sélectionné fait partie du groupe Bricolage
+                else if (parkingsBricolage.includes(cibleActuelle.id)) {
+                    // Si l'utilisateur est bloqué à l'Est de la fête
+                    if (userPos.lon > -1.7300) { 
+                        cheminPoints = [
+                            L.latLng(userPos.lat, userPos.lon),
+                            L.latLng(47.284905, -1.748052), 
+                            L.latLng(47.288370, -1.759639), 
+                            L.latLng(47.287205, -1.793242), 
+                            L.latLng(47.278763, -1.790728), 
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
@@ -458,7 +495,6 @@ function mettreAJourGuidage() {
                 // 4. Envoi de l'itinéraire dynamique au moteur GPS
                 routingControl = L.Routing.control({
                     waypoints: cheminPoints,
-                    // ... (la suite de votre code reste identique)
                     router: L.Routing.osrmv1({
                         serviceUrl: 'https://router.project-osrm.org/route/v1',
                         profile: 'foot' 
@@ -502,7 +538,7 @@ function mettreAJourGuidage() {
     function tracerLigneSecours() {
         if(routingControl) { map.removeControl(routingControl); routingControl = null; }
         if(backupLine) { map.removeLayer(backupLine); }
-        
+
         backupLine = L.polyline([[userPos.lat, userPos.lon], [cibleActuelle.lat, cibleActuelle.lon]], {
             color: '#dc3545',
             weight: 4,
