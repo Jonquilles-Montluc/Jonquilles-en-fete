@@ -411,11 +411,11 @@ function mettreAJourGuidage() {
 
                 // 2. GROUPEMENT DES PARKINGS DE L'OUEST (ex: ID 1, 2 et 7)
                 // Ces parkings demandent un contournement si l'utilisateur vient de l'Est
-                const parkingsOuest = [1, 2, 7];
+                const parkingsOuest = [1, 2, 4, 5, 6, 7];
 
                 // 3. GROUPEMENT DES PARKINGS DE L'EST (ex: ID 3 et 8)
                 // Ces parkings demanderaient un contournement si l'utilisateur vient de l'Ouest
-                const parkingsEst = [3, 8];
+                const parkingsEst = [3, 8, 9];
 
                 // --- LOGIQUE DE CONTOURNEMENT GROUPÉE ---
                 
@@ -425,7 +425,9 @@ function mettreAJourGuidage() {
                     if (userPos.lon > -1.7700) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.2820, -1.7850), // Waypoint Nord de contournement
+                            L.latLng(47.278046, -1.750439), // Waypoint Nord de contournement
+                            L.latLng(47.263679, -1.775173), // Waypoint Nord de contournement
+                            L.latLng(47.268047, -1.795736), // Waypoint Nord de contournement
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
@@ -437,7 +439,7 @@ function mettreAJourGuidage() {
                     if (userPos.lon < -1.7900) { 
                         cheminPoints = [
                             L.latLng(userPos.lat, userPos.lon),
-                            L.latLng(47.2710, -1.7650), // Un autre waypoint adapté pour l'Est
+                            L.latLng(47.278046, -1.750439), // Un autre waypoint adapté pour l'Est
                             L.latLng(cibleActuelle.lat, cibleActuelle.lon)
                         ];
                     }
