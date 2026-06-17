@@ -12,10 +12,20 @@
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; }
-        #map { flex: 1; width: 100%; }
-
-        #control-panel { height: 40vh; background: #ffff00; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); padding: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; overflow-y: auto; }
+        body { 
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    height: 100vh; 
+}
+#map { 
+    height: 60vh; 
+    width: 100%; 
+}
+#control-panel { 
+    height: 40vh; 
+    background: #ffff00; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); padding: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; overflow-y: auto; }
         h3 { margin: 0 0 5px 0; color: #2c3e50; text-align: center; }
 
         .categories { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
